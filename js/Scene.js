@@ -61,13 +61,25 @@ export default class Scene {
   collapseLines(time, canvasCtx) {
     cancelAnimationFrame(this.collapseAnimationFrameId);
     let startTime = 0;
+    const centerDistaces = new Map();
+    this.lines.forEach((el) => {
+      const centerDistance = el.getCenterDistance();
+      centerDistaces.set(el, centerDistance);
+    });
 
     const step = (timestamp) => {
+      this.cancelLine();
       if (!startTime) startTime = timestamp;
       let timeDiff = timestamp - startTime;
       const progress = Math.min(timeDiff / time);
-      this.lines.forEach((obj) => {
-        obj.collapse(progress);
+      const progressLeft = 1 - progress;
+      this.lines.forEach((el) => {
+        const initialDistance = centerDistaces.get(el);
+        const stepDistance = {
+          distanceX: initialDistance.distanceX * progressLeft,
+          distanceY: initialDistance.distanceY * progressLeft,
+        };
+        el.changeLength(stepDistance);
       });
 
       if (timeDiff < time) {

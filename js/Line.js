@@ -19,21 +19,26 @@ export default class Line {
     this.point2.y = y;
   }
 
-  collapse(progress) {
-    const centerX = (this.point2.x + this.point1.x) / 2;
-    const centerY = (this.point2.y + this.point1.y) / 2;
-    const distanceX = Math.abs(centerX - this.point1.x);
-    const distanceY = Math.abs(centerY - this.point1.y);
+  getCenterDistance() {
+    const { x, y } = this.getCenter();
+    const distanceX = Math.abs(x - this.point1.x);
+    const distanceY = Math.abs(y - this.point1.y);
 
-    const progressLeft = 1 - progress;
-    this.point1.x =
-      centerX + distanceX * progressLeft * (this.point1.x > centerX ? -1 : 1);
-    this.point1.y =
-      centerY + distanceY * progressLeft * (this.point1.y > centerY ? -1 : 1);
-    this.point2.x =
-      centerX + distanceX * progressLeft * (this.point2.x > centerX ? -1 : 1);
-    this.point2.y =
-      centerY + distanceY * progressLeft * (this.point2.y > centerY ? -1 : 1);
+    return { distanceX, distanceY };
+  }
+
+  getCenter() {
+    const x = (this.point2.x + this.point1.x) / 2;
+    const y = (this.point2.y + this.point1.y) / 2;
+    return { x, y };
+  }
+
+  changeLength(centerDistance) {
+    const { x, y } = this.getCenter();
+    this.point1.x = x + centerDistance.distanceX * (this.point1.x > x ? -1 : 1);
+    this.point1.y = y + centerDistance.distanceY * (this.point1.y > y ? -1 : 1);
+    this.point2.x = x + centerDistance.distanceX * (this.point2.x > x ? -1 : 1);
+    this.point2.y = y + centerDistance.distanceY * (this.point2.y > y ? -1 : 1);
   }
 
   findIntersection(line) {

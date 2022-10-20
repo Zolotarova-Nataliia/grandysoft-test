@@ -56,6 +56,6 @@ window.addEventListener("load", () => {
   });
 
   button.addEventListener("click", () => {
-    scene.collapseLines(3000, ctx);
+    scene.collapseLines(1000, ctx);
   });
 });
